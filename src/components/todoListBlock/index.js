@@ -11,6 +11,7 @@ class TodoListBlock extends React.Component{
         this.state = {
             todo: {id:'',name:'',status:''},
             todoList :[],
+            searchTodoList: false,
             search: ''
         }
     }
@@ -29,18 +30,42 @@ class TodoListBlock extends React.Component{
         this.setState({search: value});
     };
     searchTodoList =()=>{
-        this.setState({
-            todoList :  this.state.todoList.filter((item)=>{
-                return  item.name == this.state.search;
-            })
-        });
+        if(this.state.search){
+            this.setState({
+                searchTodoList :  this.state.todoList.filter((item)=>{
+                    return  item.name == this.state.search;
+                })
+            });
+        }else{
+            this.setState({
+                searchTodoList :  this.state.todoList
+            });
+        }
+
     };
+
+    getTodoList = () =>{
+        let list =[];
+      if(this.state.searchTodoList){
+          list = this.state.searchTodoList;
+      }else{
+          list = this.state.todoList;
+      }
+      return list;
+    };
+
     onChangeSelectBox = (value) =>{
-        this.setState({
-            todoList :  this.state.todoList.filter((item)=>{
-                return  item.status == value;
-            })
-        });
+        if(value != 'default'){
+            this.setState({
+                searchTodoList :  this.state.todoList.filter((item)=>{
+                    return  item.status == value;
+                })
+            });
+        }else{
+            this.setState({
+                searchTodoList :  this.state.todoList
+            });
+        }
     };
 
     onChange = (selected, id) =>{
@@ -91,11 +116,12 @@ class TodoListBlock extends React.Component{
                 <Button onClick={this.searchTodoList} className='search-button'> Search </Button>
                 <div className="select-box">
                     <select onChange={(e) => {this.onChangeSelectBox(e.target.value)} }>
+                        <option>default</option>
                         <option>check</option>
                         <option>hide</option>
                     </select>
                 </div>
-                <TodoList todoList ={this.state.todoList} onChange={this.onChange}/>
+                <TodoList todoList ={this.getTodoList()} onChange={this.onChange}/>
 
 
 
